@@ -51,8 +51,8 @@ read -p "Enter VDS user name. [${VDS_USER_DEFAULT}]: " VDS_USER
 if [[ "$VDS_USER" = "" ]]; then
     VDS_USER=$VDS_USER_DEFAULT
 fi
-adduser $VDS_USER
-usermod -a -G sudo,www-data $VDS_USER
+adduser ${VDS_USER}
+usermod -a -G sudo,www-data ${VDS_USER}
 
 
 
@@ -66,10 +66,10 @@ if [[ -f "/etc/ssh/sshd_config" ]]; then
     sed -e "s/PermitRootLogin prohibit-password/PermitRootLogin no/g; s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config.bak > /etc/ssh/sshd_config
 fi
 
-mkdir -v -m 700 /home/$VDS_USER/.ssh
-touch /home/$VDS_USER/.ssh/authorized_keys
-chmod 600 /home/$VDS_USER/.ssh/authorized_keys
-chown -R $VDS_USER:$VDS_USER /home/$VDS_USER/.ssh
+mkdir -v -m 700 "/home/$VDS_USER/.ssh"
+touch "/home/$VDS_USER/.ssh/authorized_keys"
+chmod 600 "/home/$VDS_USER/.ssh/authorized_keys"
+chown -R "$VDS_USER:$VDS_USER /home/$VDS_USER/.ssh"
 echo -e "\n$ID_RSA_PUB" > /home/$VDS_USER/.ssh/authorized_keys
 service ssh restart
 
@@ -138,6 +138,16 @@ echo -e "-------------------------------------------\n"
 add-apt-repository ppa:ondrej/nginx-mainline
 apt update
 apt install -y nginx
+if [[ -f "$PWD/nginx.conf" ]]; then
+    mv -v /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+    cp -v "$PWD/nginx.conf" /etc/nginx/nginx.conf
+    chown root:root /etc/nginx/nginx.conf
+    chmod 644 /etc/nginx/nginx.conf
+    nginx -s reload
+else
+    echo "Custom nginx.conf not found. Keep default."
+fi
+
 mkdir -v -m 775 /var/www
 chown -R www-data:www-data /var/www
 
@@ -145,7 +155,7 @@ chown -R www-data:www-data /var/www
 
 # let's encrypt
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
-    
+    apt install -ym letsencrypt
 fi
 
 

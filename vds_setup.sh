@@ -117,9 +117,9 @@ systemctl enable docker
 echo -e "\n *** Create self-signed Certificate ***"
 echo -e "-------------------------------------------\n"
 
-mkdir -v /etc/certs
+mkdir -pv /etc/certs/self-signed
 openssl dhparam -out /etc/certs/dhparam.pem -dsaparam 4096
-openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-signed.key -out /etc/certs/self-signed.crt -subj /C=AA/ST=AA/L=Internet/O=MailInABox/CN=$(hostname -s)
+openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-signed/self-signed.key -out /etc/certs/self-signed/self-signed.crt -subj /C=AA/ST=AA/L=Internet/O=MailInABox/CN=$(hostname -s)
 
 
 
@@ -132,7 +132,7 @@ apt update
 apt install -y nginx
 if [[ -f "$PWD/nginx.conf" ]]; then
     mv -v /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-    cp -v "$PWD/nginx.conf" /etc/nginx/nginx.conf
+    cp -v "$PWD/nginx/nginx.conf" /etc/nginx/nginx.conf
     chown root:root /etc/nginx/nginx.conf
     chmod 644 /etc/nginx/nginx.conf
     nginx -s reload
@@ -156,13 +156,11 @@ fi
 echo -e "\n *** Install Docker manager ***"
 echo -e "-------------------------------------------\n"
 
-read -p "Enter domain name for Docker manager (portainer): " PORTAINER_DOMAIN
-
-#docker run -d -e VIRTUAL_PORT=9000 -e VIRTUAL_HOST=${PORTAINER_DOMAIN} -e HSTS=off --net webproxy --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --name portainer portainer/portainer
-docker run -d -p 9000:9000 -v /etc/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/self-signed.crt --sslkey /certs/self-signed.key
-#cp -v /etc/certs/self-signed.crt /opt/nginx-proxy/data/certs/${PORTAINER_DOMAIN}.crt
-#cp -v /etc/certs/self-signed.key /opt/nginx-proxy/data/certs/${PORTAINER_DOMAIN}.key
-
+docker run -d -p 9000:9000 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/self-signed.crt --sslkey /certs/self-signed.key
+cp -v "$PWD/nginx/portainer.conf" /etc/nginx/conf.d/
+sed -e "s/portainer/$PORTAINER_DOMAIN/g" /etc/nginx/conf.d/portainer.conf > /etc/nginx/conf.d/portainer.conf
+chmod 644 /etc/nginx/conf.d/portainer.conf
+nginx -s reload
 
 
 # result

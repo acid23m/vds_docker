@@ -61,7 +61,7 @@ fi
 mkdir -v -m 700 "/home/$VDS_USER/.ssh"
 touch "/home/$VDS_USER/.ssh/authorized_keys"
 chmod 600 "/home/$VDS_USER/.ssh/authorized_keys"
-chown -R "$VDS_USER:$VDS_USER /home/$VDS_USER/.ssh"
+chown -R "$VDS_USER:$VDS_USER" "/home/$VDS_USER/.ssh"
 echo -e "\n$ID_RSA_PUB" > /home/$VDS_USER/.ssh/authorized_keys
 service ssh restart
 

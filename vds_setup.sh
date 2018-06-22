@@ -6,11 +6,9 @@
 # --------------------------------------------------------
 
 
-# variables
-# --------------------------------------
-VDS_USER_DEFAULT="wuser"
-ID_RSA_PUB="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFdthYXKQHWMpoKjKNkKx0Ks04BYynW+HXOLihd/cY7OCFiKisRwDM5yc4nfrnDOjBsElf5doC+syrsG69//CjBFzsyVL5rW3IYFefQDCol2rhlBWsKSlWqv1OlJq71cImG+AM2H7TbwToxEJQA7Yj65tZ7D3SLgdQ8STwx0qfo+LkUoepXOOyD1AK9gIzj3mFt6ehwY+2kGpbZnSlw7HdjHBI5WpAfNKWJghd49Pxmsf1xVqZErBGKsT2NCr7M2y9JRPn6aiP3OkpLq/VrqKaHU38aka7dT7ZRjQfGz/nlwuKS3DXYj2L1j6Jm93vcCfnuuo6DHnDZhQEiBgQ7L4f acid23m@Xenomorph"
-# --------------------------------------
+set -ae
+. ./.env
+set +a
 
 
 
@@ -20,11 +18,8 @@ if [[ $(id -u) != 0 ]]; then
 fi
 
 
-read -p "Is VDS remote? [y/n] " VDS_IS_REMOTE
-if [[ "$VDS_IS_REMOTE" = "y" ]]; then
+if [[ "$VDS_IS_REMOTE" = "y" ]] && [[ -z "$HOST_IP" ]]; then
     HOST_IP=`curl -s https://api.ipify.org`
-else
-    read -p "Enter ip address of the local server: ($(hostname -I)) " HOST_IP
 fi
 
 
@@ -47,10 +42,7 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 echo -e "\n *** Create main User ***"
 echo -e "-------------------------------------------\n"
 
-read -p "Enter VDS user name. [${VDS_USER_DEFAULT}]: " VDS_USER
-if [[ "$VDS_USER" = "" ]]; then
-    VDS_USER=$VDS_USER_DEFAULT
-fi
+echo "Creating user $VDS_USER"
 adduser ${VDS_USER}
 usermod -a -G sudo,www-data ${VDS_USER}
 
@@ -90,6 +82,7 @@ systemctl enable fail2ban
 # firewall
 echo -e "\n *** Configure Firewall ***"
 echo -e "-------------------------------------------\n"
+
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow ssh
@@ -105,11 +98,10 @@ echo -e "\n *** Install Docker ***"
 echo -e "-------------------------------------------\n"
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-#add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 touch /etc/apt/sources.list.d/docker.list
 echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" >> /etc/apt/sources.list.d/docker.list
 echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge" >> /etc/apt/sources.list.d/docker.list
-echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) nightly" >> /etc/apt/sources.list.d/docker.list
+#echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) nightly" >> /etc/apt/sources.list.d/docker.list
 apt update
 apt install -ym docker-ce
 curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
@@ -126,8 +118,8 @@ echo -e "\n *** Create self-signed Certificate ***"
 echo -e "-------------------------------------------\n"
 
 mkdir -v /etc/certs
-openssl dhparam -out /etc/certs/dhparam.pem 2048
-openssl req -x509 -nodes -newkey rsa:2048 -days 36500 -keyout /etc/certs/self-signed.key -out /etc/certs/self-signed.crt -subj /C=AA/ST=AA/L=Internet/O=MailInABox/CN=$(hostname -s)
+openssl dhparam -out /etc/certs/dhparam.pem -dsaparam 4096
+openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-signed.key -out /etc/certs/self-signed.crt -subj /C=AA/ST=AA/L=Internet/O=MailInABox/CN=$(hostname -s)
 
 
 

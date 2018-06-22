@@ -30,8 +30,8 @@ echo -e "-------------------------------------------\n"
 
 apt update
 apt dist-upgrade -y
-apt upgrade -y
-apt install -ym git openssl software-properties-common wget curl cron mc
+apt full-upgrade -y
+apt install -ym git openssl software-properties-common wget curl cron python3 mc
 apt autoremove -y
 apt autoclean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -71,11 +71,19 @@ service ssh restart
 echo -e "\n *** Configure Fail2ban ***"
 echo -e "-------------------------------------------\n"
 
-apt-get install -ym fail2ban
+#apt install -ym fail2ban
+git clone https://github.com/fail2ban/fail2ban.git
+cd "$PWD/fail2ban"
+python3 setup.py install
+cp "$PWD/files/debian-initd" /etc/init.d/fail2ban
+update-rc.d fail2ban defaults
 if [[ -f "/etc/fail2ban/jail.d/defaults-debian.conf" ]]; then
     echo -e "\n[sshd-ddos]\nenabled = true\n" >> /etc/fail2ban/jail.d/defaults-debian.conf
 fi
+service fail2ban start
 systemctl enable fail2ban
+cd "$PWD/.."
+rm -r "$PWD/fail2ban"
 
 
 
@@ -106,7 +114,7 @@ apt update
 apt install -ym docker-ce
 curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
-groupadd docker
+groupadd -f docker
 usermod -a -G docker $VDS_USER
 usermod -a -G docker root
 systemctl enable docker
@@ -170,7 +178,5 @@ echo "Connect to VDS: ssh ${VDS_USER}@${HOST_IP}"
 echo "Docker manager: https://${PORTAINER_DOMAIN}"
 echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
 echo -e "Reboot VDS to complete installation: sudo reboot\n"
-
-systemctl start fail2ban
 
 exit 0

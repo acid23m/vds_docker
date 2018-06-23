@@ -112,7 +112,7 @@ echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -c
 #echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) nightly" >> /etc/apt/sources.list.d/docker.list
 apt update
 apt install -ym docker-ce
-curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 groupadd -f docker
 usermod -a -G docker $VDS_USER
@@ -127,7 +127,7 @@ echo -e "-------------------------------------------\n"
 
 mkdir -pv /etc/certs/self-signed
 openssl dhparam -out /etc/certs/dhparam.pem -dsaparam 4096
-openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-signed/self-signed.key -out /etc/certs/self-signed/self-signed.crt -subj /C=AA/ST=AA/L=Internet/O=MailInABox/CN=$(hostname -s)
+openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-signed/cert.key -out /etc/certs/self-signed/cert.crt -subj "/C=RU/ST=RU/L=Internet/O=$(hostname -s)/CN=${HOST_IP}"
 
 
 
@@ -138,7 +138,7 @@ echo -e "-------------------------------------------\n"
 add-apt-repository ppa:ondrej/nginx-mainline
 apt update
 apt install -y nginx
-if [[ -f "$PWD/nginx.conf" ]]; then
+if [[ -f "$PWD/nginx/nginx.conf" ]]; then
     mv -v /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
     cp -v "$PWD/nginx/nginx.conf" /etc/nginx/nginx.conf
     chown root:root /etc/nginx/nginx.conf
@@ -148,7 +148,7 @@ else
     echo "Custom nginx.conf not found. Keep default."
 fi
 
-mkdir -v -m 775 /var/www
+mkdir -pv -m 775 /var/www
 chown -R www-data:www-data /var/www
 
 
@@ -164,7 +164,7 @@ fi
 echo -e "\n *** Install Docker manager ***"
 echo -e "-------------------------------------------\n"
 
-docker run -d -p 9000:9000 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/self-signed.crt --sslkey /certs/self-signed.key
+docker run -d -p 9000:9000 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/cert.crt --sslkey /certs/cert.key
 cp -v "$PWD/nginx/portainer.conf" /etc/nginx/conf.d/
 sed -e "s/portainer/$PORTAINER_DOMAIN/g" /etc/nginx/conf.d/portainer.conf > /etc/nginx/conf.d/portainer.conf
 chmod 644 /etc/nginx/conf.d/portainer.conf

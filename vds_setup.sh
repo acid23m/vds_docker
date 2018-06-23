@@ -165,8 +165,7 @@ echo -e "\n *** Install Docker manager ***"
 echo -e "-------------------------------------------\n"
 
 docker run -d -p 9000:9000 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/cert.crt --sslkey /certs/cert.key
-cp -v "$PWD/nginx/portainer.conf" /etc/nginx/conf.d/
-sed -e "s/portainer/$PORTAINER_DOMAIN/g" /etc/nginx/conf.d/portainer.conf > /etc/nginx/conf.d/portainer.conf
+sed "s/portainer/${PORTAINER_DOMAIN}/g" "$PWD/nginx/portainer.conf" > /etc/nginx/conf.d/portainer.conf
 chmod 644 /etc/nginx/conf.d/portainer.conf
 nginx -s reload
 
@@ -176,7 +175,7 @@ echo -e "\n *** All Done! ***"
 echo "-------------------------------------------"
 echo "Connect to VDS: ssh ${VDS_USER}@${HOST_IP}"
 echo "Docker manager: https://${PORTAINER_DOMAIN}"
-echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
+#echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
 echo -e "Reboot VDS to complete installation: sudo reboot\n"
 
 exit 0

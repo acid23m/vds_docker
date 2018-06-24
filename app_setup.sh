@@ -52,20 +52,19 @@ service nginx start
 echo -e "\n *** Get project ***"
 echo -e "-------------------------------------------\n"
 
-
-cd /var/www
-git clone "${GIT_ADDRESS}" "${PROJECT_DIR_NAME}"
-chown -R "${VDS_USER}:www-data" "${PROJECT_DIR_NAME}"
-cd "${PROJECT_DIR_NAME}"
+git clone "${GIT_ADDRESS}" "/var/www/${PROJECT_DIR_NAME}"
+chown -R "${VDS_USER}:www-data" "/var/www/${PROJECT_DIR_NAME}"
 
 
 
 # install project
-echo -e "\n *** Get project ***"
+echo -e "\n *** Install project ***"
 echo -e "-------------------------------------------\n"
 
-cp -av .env.example .env
-nano .env
+cp -av "/var/www/${PROJECT_DIR_NAME}/.env.example" "/var/www/${PROJECT_DIR_NAME}/.env"
+nano "/var/www/${PROJECT_DIR_NAME}/.env"
+/bin/bash "/var/www/${PROJECT_DIR_NAME}/start.sh"
+/bin/bash "/var/www/${PROJECT_DIR_NAME}/install.sh"
 
 
 

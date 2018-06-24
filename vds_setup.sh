@@ -19,7 +19,7 @@ fi
 
 
 if [[ "$VDS_IS_REMOTE" = "y" ]] && [[ -z "$HOST_IP" ]]; then
-    HOST_IP=`curl -s https://api.ipify.org`
+    HOST_IP=$(curl -s https://api.ipify.org)
 fi
 
 
@@ -175,6 +175,9 @@ echo -e "\n *** All Done! ***"
 echo "-------------------------------------------"
 echo "Connect to VDS: ssh ${VDS_USER}@${HOST_IP}"
 echo "Docker manager: https://${PORTAINER_DOMAIN}"
+if [[ "$VDS_IS_REMOTE" = "n" ]]; then
+    echo "Don\'t forget to add \'${HOST_IP} ${PORTAINER_DOMAIN}\' to /etc/hosts"
+fi
 #echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
 echo -e "Reboot VDS to complete installation: sudo reboot\n"
 

@@ -31,7 +31,7 @@ echo -e "-------------------------------------------\n"
 apt update
 apt dist-upgrade -y
 apt full-upgrade -y
-apt install -ym git openssl software-properties-common wget curl cron python3 mc
+apt install -ym git openssl software-properties-common bc wget curl cron python3 mc
 apt autoremove -y
 apt autoclean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -155,7 +155,12 @@ chown -R www-data:www-data /var/www
 
 # let's encrypt
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
-    apt install -ym letsencrypt
+    git clone https://github.com/Neilpang/acme.sh.git
+    apt install -ym socat
+    cd "$PWD/acme.sh/"
+    ./acme.sh --install
+    cd ..
+    source /root/.bashrc
 fi
 
 
@@ -175,7 +180,9 @@ echo -e "\n *** All Done! ***"
 echo "-------------------------------------------"
 echo "Connect to VDS: ssh ${VDS_USER}@${HOST_IP}"
 echo "Docker manager: https://${PORTAINER_DOMAIN}"
-if [[ "$VDS_IS_REMOTE" = "n" ]]; then
+if [[ "$VDS_IS_REMOTE" = "y" ]]; then
+    echo "An ACME Shell script: https://github.com/Neilpang/acme.sh"
+else
     echo "Don\'t forget to add \'${HOST_IP} ${PORTAINER_DOMAIN}\' to /etc/hosts"
 fi
 #echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"

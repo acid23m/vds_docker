@@ -28,6 +28,7 @@ SITE_DOMAIN=$3
 SITE_PORT=$4
 
 
+
 # nginx config
 echo -e "\n *** Setup NGINX ***"
 echo -e "-------------------------------------------\n"
@@ -46,6 +47,7 @@ chmod 644 "/etc/nginx/conf.d/${PROJECT_DIR_NAME}.conf"
 service nginx start
 
 
+
 # get project
 echo -e "\n *** Get project ***"
 echo -e "-------------------------------------------\n"
@@ -57,12 +59,14 @@ chown -R "${VDS_USER}:www-data" "${PROJECT_DIR_NAME}"
 cd "${PROJECT_DIR_NAME}"
 
 
+
 # install project
 echo -e "\n *** Get project ***"
 echo -e "-------------------------------------------\n"
 
 cp -av .env.example .env
 nano .env
+
 
 
 # result

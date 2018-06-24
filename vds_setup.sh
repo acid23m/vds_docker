@@ -157,7 +157,7 @@ chown -R www-data:www-data /var/www
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
     git clone https://github.com/Neilpang/acme.sh.git
     apt install -ym socat
-    /bin/bash "$PWD/acme.sh/acme.sh" --install
+    /bin/bash "$PWD/acme.sh/acme.sh" --install --accountemail  "${ADMIN_EMAIL}"
     source /root/.bashrc
 fi
 

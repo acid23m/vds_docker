@@ -61,10 +61,13 @@ chown -R "${VDS_USER}:www-data" "/var/www/${PROJECT_DIR_NAME}"
 echo -e "\n *** Install project ***"
 echo -e "-------------------------------------------\n"
 
-cp -av "/var/www/${PROJECT_DIR_NAME}/.env.example" "/var/www/${PROJECT_DIR_NAME}/.env"
-nano "/var/www/${PROJECT_DIR_NAME}/.env"
-/bin/bash "/var/www/${PROJECT_DIR_NAME}/start.sh"
-/bin/bash "/var/www/${PROJECT_DIR_NAME}/install.sh"
+INIT_DIR=$PWD
+cd "/var/www/${PROJECT_DIR_NAME}"
+cp -av .env.example .env
+nano .env
+/bin/bash ./start.sh
+/bin/bash ./install.sh
+cd ${INIT_DIR}
 
 
 

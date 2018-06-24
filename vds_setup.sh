@@ -58,11 +58,17 @@ if [[ -f "/etc/ssh/sshd_config" ]]; then
     sed -e "s/PermitRootLogin prohibit-password/PermitRootLogin no/g; s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config.bak > /etc/ssh/sshd_config
 fi
 
-mkdir -v -m 700 "/home/$VDS_USER/.ssh"
-touch "/home/$VDS_USER/.ssh/authorized_keys"
-chmod 600 "/home/$VDS_USER/.ssh/authorized_keys"
-chown -R "$VDS_USER:$VDS_USER" "/home/$VDS_USER/.ssh"
-echo -e "\n$ID_RSA_PUB" > /home/$VDS_USER/.ssh/authorized_keys
+mkdir -vp -m 700 /root/.ssh
+touch /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+chown -R root:root /root/.ssh
+echo -e "\n${ID_RSA_PUB}" >> /root/.ssh/authorized_keys
+
+mkdir -vp -m 700 "/home/${VDS_USER}/.ssh"
+touch "/home/${VDS_USER}/.ssh/authorized_keys"
+chmod 600 "/home/${VDS_USER}/.ssh/authorized_keys"
+chown -R "${VDS_USER}:${VDS_USER}" "/home/${VDS_USER}/.ssh"
+echo -e "\n${ID_RSA_PUB}" >> "/home/${VDS_USER}/.ssh/authorized_keys"
 service ssh restart
 
 

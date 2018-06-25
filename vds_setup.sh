@@ -102,6 +102,10 @@ ufw default allow outgoing
 ufw allow ssh
 ufw allow http
 ufw allow https
+ufw allow 2377/tcp
+ufw allow 7946
+ufw allow 4789/udp
+ufw allow 
 ufw enable
 ufw status
 

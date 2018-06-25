@@ -141,7 +141,7 @@ openssl req -x509 -nodes -newkey rsa:4096 -days 36500 -keyout /etc/certs/self-si
 echo -e "\n *** Install Web Server ***"
 echo -e "-------------------------------------------\n"
 
-add-apt-repository ppa:ondrej/nginx-mainline
+add-apt-repository -y ppa:ondrej/nginx-mainline
 apt update
 apt install -y nginx
 if [[ -f "$PWD/nginx/nginx.conf" ]]; then
@@ -187,7 +187,7 @@ echo "Docker manager: https://${PORTAINER_DOMAIN}"
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
     echo "An ACME Shell script: https://github.com/Neilpang/acme.sh"
 else
-    echo "Don\'t forget to add \'${HOST_IP} ${PORTAINER_DOMAIN}\' to /etc/hosts"
+    echo "Don't forget to add '${HOST_IP} ${PORTAINER_DOMAIN}' to /etc/hosts"
 fi
 #echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
 echo -e "Reboot VDS to complete installation: sudo reboot\n"

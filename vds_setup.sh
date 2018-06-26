@@ -159,7 +159,7 @@ else
 fi
 
 mkdir -pv -m 775 /var/www
-chown -R www-data:www-data /var/www
+chown -R "${VDS_USER}:www-data" /var/www
 
 
 

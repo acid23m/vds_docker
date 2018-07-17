@@ -193,7 +193,6 @@ if [[ "$VDS_IS_REMOTE" = "y" ]]; then
 else
     echo "Don't forget to add '${HOST_IP} ${PORTAINER_DOMAIN}' to /etc/hosts"
 fi
-#echo "Nginx Proxy documentation: https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion"
 echo -e "Reboot VDS to complete installation: sudo reboot\n"
 
 exit 0

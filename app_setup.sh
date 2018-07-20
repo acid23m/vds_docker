@@ -42,8 +42,9 @@ if [[ "$VDS_IS_REMOTE" = "y" ]]; then
 else
     CERT_DIR="self-signed"
 fi
-sed -e "s/SITE_DOMAIN/${SITE_DOMAIN}/g; s/PORT/${SITE_PORT}/g; s/CERT_DIR/${CERT_DIR}/g" "$PWD/nginx/site.conf" > "/etc/nginx/conf.d/${PROJECT_DIR_NAME}.conf"
-chmod 644 "/etc/nginx/conf.d/${PROJECT_DIR_NAME}.conf"
+SITE_NGINX_CONF="${PROJECT_DIR_NAME}_${SITE_PORT}.conf"
+sed -e "s/SITE_DOMAIN/${SITE_DOMAIN}/g; s/PORT/${SITE_PORT}/g; s/CERT_DIR/${CERT_DIR}/g" "$PWD/nginx/site.conf" > "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
+chmod 644 "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
 service nginx start
 
 

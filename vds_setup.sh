@@ -31,7 +31,7 @@ echo -e "-------------------------------------------\n"
 apt update
 apt dist-upgrade -y
 apt full-upgrade -y
-apt install -ym git openssl software-properties-common bc wget curl cron python3 mc
+apt install -ym git openssl software-properties-common bc wget curl cron python3 mc tree
 apt autoremove -y
 apt autoclean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

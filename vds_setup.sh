@@ -105,7 +105,6 @@ ufw allow https
 ufw allow 2377/tcp
 ufw allow 7946
 ufw allow 4789/udp
-ufw allow 
 ufw enable
 ufw status
 
@@ -122,7 +121,7 @@ echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -c
 #echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) nightly" >> /etc/apt/sources.list.d/docker.list
 apt update
 apt install -ym docker-ce
-curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 groupadd -f docker
 usermod -a -G docker $VDS_USER
@@ -167,7 +166,10 @@ chown -R "${VDS_USER}:www-data" /var/www
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
     git clone https://github.com/Neilpang/acme.sh.git
     apt install -ym socat
-    /bin/bash "$PWD/acme.sh/acme.sh" --install --accountemail  "${ADMIN_EMAIL}"
+    cd "$PWD/acme.sh"
+    /bin/bash acme.sh --install --accountemail  "${ADMIN_EMAIL}"
+    cd "$PWD/.."
+    rm -r "$PWD/acme.sh"
     source /root/.bashrc
 fi
 

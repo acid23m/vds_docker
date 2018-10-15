@@ -35,15 +35,17 @@ echo -e "-------------------------------------------\n"
 
 service nginx stop
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
-    CERT_DIR=${SITE_DOMAIN}
+    CERT_PATH="/root/.acme.sh/${SITE_DOMAIN}/fullchain.cer"
+    CERT_KEY_PATH="/root/.acme.sh/${SITE_DOMAIN}/${SITE_DOMAIN}.key"
     # get letsencrypt certificate
-    acme.sh --issue -d "${SITE_DOMAIN}" --standalone -k 4096
-    acme.sh --install-cert -d "${SITE_DOMAIN}" --key-file "/etc/certs/${CERT_DIR}/cert.key" --fullchain-file "/etc/certs/${CERT_DIR}/cert.crt"
+    /root/.acme.sh/acme.sh --issue -d "${SITE_DOMAIN}" --standalone -k 4096 --force
+    /root/.acme.sh/acme.sh --install-cert -d "${SITE_DOMAIN}"
 else
-    CERT_DIR="self-signed"
+    CERT_PATH="/etc/certs/${SITE_DOMAIN}/cert.crt"
+    CERT_KEY_PATH="/etc/certs/${SITE_DOMAIN}/cert.key"
 fi
 SITE_NGINX_CONF="${PROJECT_DIR_NAME}_${SITE_PORT}.conf"
-sed -e "s/SITE_DOMAIN/${SITE_DOMAIN}/g; s/PORT/${SITE_PORT}/g; s/CERT_DIR/${CERT_DIR}/g" "$PWD/nginx/site.conf" > "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
+sed -e "s|SITE_DOMAIN|${SITE_DOMAIN}|g; s|PORT|${SITE_PORT}|g; s|CERT_PATH|${CERT_PATH}|g; s|CERT_KEY_PATH|${CERT_KEY_PATH}|g" "$PWD/nginx/site.conf" > "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
 chmod 644 "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
 service nginx start
 

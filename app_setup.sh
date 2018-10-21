@@ -35,14 +35,15 @@ echo -e "-------------------------------------------\n"
 
 service nginx stop
 if [[ "$VDS_IS_REMOTE" = "y" ]]; then
-    CERT_PATH="/root/.acme.sh/${SITE_DOMAIN}/fullchain.cer"
-    CERT_KEY_PATH="/root/.acme.sh/${SITE_DOMAIN}/${SITE_DOMAIN}.key"
-    # get letsencrypt certificate
-    /root/.acme.sh/acme.sh --issue -d "${SITE_DOMAIN}" --standalone -k 4096 --force
-    /root/.acme.sh/acme.sh --install-cert -d "${SITE_DOMAIN}"
-else
     CERT_PATH="/etc/certs/${SITE_DOMAIN}/cert.crt"
     CERT_KEY_PATH="/etc/certs/${SITE_DOMAIN}/cert.key"
+    mkdir -pv "/etc/certs/${SITE_DOMAIN}"
+    # get letsencrypt certificate
+    /root/.acme.sh/acme.sh --issue -d "${SITE_DOMAIN}" -d "www.${SITE_DOMAIN}" --standalone -k 4096 --force
+    /root/.acme.sh/acme.sh --install-cert -d "${SITE_DOMAIN}" --key-file "${CERT_KEY_PATH}" --fullchain-file "${CERT_PATH}"
+else
+    CERT_PATH="/etc/certs/self-signed/cert.crt"
+    CERT_KEY_PATH="/etc/certs/self-signed/cert.key"
 fi
 SITE_NGINX_CONF="${PROJECT_DIR_NAME}_${SITE_PORT}.conf"
 sed -e "s|SITE_DOMAIN|${SITE_DOMAIN}|g; s|PORT|${SITE_PORT}|g; s|CERT_PATH|${CERT_PATH}|g; s|CERT_KEY_PATH|${CERT_KEY_PATH}|g" "$PWD/nginx/site.conf" > "/etc/nginx/conf.d/${SITE_NGINX_CONF}"
@@ -68,8 +69,8 @@ INIT_DIR=$PWD
 cd "/var/www/${PROJECT_DIR_NAME}"
 cp -av .env.example .env
 nano .env
-/bin/bash ./start.sh
-/bin/bash ./install.sh
+/bin/bash "$PWD/start.sh"
+/bin/bash "$PWD/install.sh"
 cd ${INIT_DIR}
 
 

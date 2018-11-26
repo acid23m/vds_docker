@@ -102,6 +102,7 @@ ufw default allow outgoing
 ufw allow ssh
 ufw allow http
 ufw allow https
+# docker ports
 ufw allow 2377/tcp
 ufw allow 7946
 ufw allow 4789/udp
@@ -152,6 +153,7 @@ if [[ -f "$PWD/nginx/nginx.conf" ]]; then
     cp -v "$PWD/nginx/nginx.conf" /etc/nginx/nginx.conf
     chown root:root /etc/nginx/nginx.conf
     chmod 644 /etc/nginx/nginx.conf
+    mkdir -pv /tmp/nginx/proxycache
     nginx -s reload
 else
     echo "Custom nginx.conf not found. Keep default."

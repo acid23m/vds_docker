@@ -21,6 +21,8 @@ Clone bundle.
 ```bash
 apt install git -y
 git clone git@github.com:acid23m/vds_docker.git
+# or
+#git clone https://github.com/acid23m/vds_docker.git
 cd vds_docker
 ```
 

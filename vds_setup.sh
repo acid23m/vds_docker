@@ -70,6 +70,8 @@ chmod 600 "/home/${VDS_USER}/.ssh/authorized_keys"
 chown -R "${VDS_USER}:${VDS_USER}" "/home/${VDS_USER}/.ssh"
 echo -e "\n${ID_RSA_PUB}" >> "/home/${VDS_USER}/.ssh/authorized_keys"
 service ssh restart
+ssh-keygen -t rsa -P "" -f "/home/${VDS_USER}/.ssh/id_rsa"
+ssh-keygen -t rsa -P "" -f /root/.ssh/id_rsa
 
 
 
@@ -77,19 +79,12 @@ service ssh restart
 echo -e "\n *** Configure Fail2ban ***"
 echo -e "-------------------------------------------\n"
 
+add-apt-repository -y universe
 apt install -ym fail2ban
-#git clone https://github.com/fail2ban/fail2ban.git
-#cd "$PWD/fail2ban"
-#python3 setup.py install
-#cp "$PWD/files/debian-initd" /etc/init.d/fail2ban
-#update-rc.d fail2ban defaults
 if [[ -f "/etc/fail2ban/jail.d/defaults-debian.conf" ]]; then
     echo -e "\n[sshd-ddos]\nenabled = true\n" >> /etc/fail2ban/jail.d/defaults-debian.conf
 fi
 service fail2ban start
-#systemctl enable fail2ban
-#cd "$PWD/.."
-#rm -r "$PWD/fail2ban"
 
 
 

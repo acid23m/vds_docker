@@ -39,7 +39,7 @@ if [[ "$VDS_IS_REMOTE" = "y" ]]; then
     CERT_KEY_PATH="/etc/certs/${SITE_DOMAIN}/cert.key"
     mkdir -pv "/etc/certs/${SITE_DOMAIN}"
     # get letsencrypt certificate
-    /root/.acme.sh/acme.sh --issue -d "${SITE_DOMAIN}" -d "www.${SITE_DOMAIN}" --standalone -k 4096 --force
+    /root/.acme.sh/acme.sh --issue -d "${SITE_DOMAIN}" --standalone -k 4096 --force
     /root/.acme.sh/acme.sh --install-cert -d "${SITE_DOMAIN}" --key-file "${CERT_KEY_PATH}" --fullchain-file "${CERT_PATH}"
 else
     CERT_PATH="/etc/certs/self-signed/cert.crt"

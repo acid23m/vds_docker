@@ -67,11 +67,11 @@ echo -e "\n${ID_RSA_PUB}" >> /root/.ssh/authorized_keys
 mkdir -vp -m 700 "/home/${VDS_USER}/.ssh"
 touch "/home/${VDS_USER}/.ssh/authorized_keys"
 chmod 600 "/home/${VDS_USER}/.ssh/authorized_keys"
-chown -R "${VDS_USER}:${VDS_USER}" "/home/${VDS_USER}/.ssh"
 echo -e "\n${ID_RSA_PUB}" >> "/home/${VDS_USER}/.ssh/authorized_keys"
-service ssh restart
 ssh-keygen -t rsa -P "" -f "/home/${VDS_USER}/.ssh/id_rsa"
 ssh-keygen -t rsa -P "" -f /root/.ssh/id_rsa
+chown -R "${VDS_USER}:${VDS_USER}" "/home/${VDS_USER}/.ssh"
+service ssh restart
 
 
 

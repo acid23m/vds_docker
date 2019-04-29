@@ -80,6 +80,7 @@ echo -e "\n *** Configure Fail2ban ***"
 echo -e "-------------------------------------------\n"
 
 add-apt-repository -y universe
+apt update
 apt install -ym fail2ban
 if [[ -f "/etc/fail2ban/jail.d/defaults-debian.conf" ]]; then
     echo -e "\n[sshd-ddos]\nenabled = true\n" >> /etc/fail2ban/jail.d/defaults-debian.conf

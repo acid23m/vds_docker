@@ -19,6 +19,7 @@ ssh root@123.456.789.000
 Clone bundle.
 
 ```bash
+apt update
 apt install git -y
 git clone git@github.com:acid23m/vds_docker.git
 # or

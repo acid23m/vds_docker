@@ -149,7 +149,7 @@ if [[ -f "$PWD/nginx/nginx.conf" ]]; then
     cp -v "$PWD/nginx/nginx.conf" /etc/nginx/nginx.conf
     chown root:root /etc/nginx/nginx.conf
     chmod 644 /etc/nginx/nginx.conf
-    mkdir -pv /tmp/nginx/proxycache
+    mkdir -pv /tmp/nginx-proxy-cache
     nginx -s reload
 else
     echo "Custom nginx.conf not found. Keep default."

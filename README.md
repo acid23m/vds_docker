@@ -41,6 +41,7 @@ Run **vds_setup.sh**.
 ```bash
 ./vds_setup.sh
 ```
+
 It will:
 
 - upgrade system

@@ -169,6 +169,7 @@ if [[ "$VDS_IS_REMOTE" = "y" ]]; then
     cd "$PWD/.."
     rm -r "$PWD/acme.sh"
     source /root/.bashrc
+    /root/.acme.sh/acme.sh --upgrade --auto-upgrade
 fi
 
 

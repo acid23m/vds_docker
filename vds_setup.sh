@@ -35,6 +35,10 @@ apt install -ym git openssl software-properties-common bc wget curl cron python3
 apt autoremove -y
 apt autoclean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+echo "kernel.exec-shield=1" >> /etc/sysctl.conf
+echo "kernel.randomize_va_space=1" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.rp_filter=1" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.log_martians=1" >> /etc/sysctl.conf
 
 
 

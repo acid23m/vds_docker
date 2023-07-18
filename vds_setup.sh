@@ -183,7 +183,7 @@ fi
 echo -e "\n *** Install Docker manager ***"
 echo -e "-------------------------------------------\n"
 
-docker run -d -p 9000:9000 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer --ssl --sslcert /certs/cert.crt --sslkey /certs/cert.key
+docker run -d -p 9000:9000 -p 9443:9443 -v /etc/certs/self-signed:/certs -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data --restart always --name portainer portainer/portainer-ce --ssl --sslcert /certs/cert.crt --sslkey /certs/cert.key
 sed "s/portainer/${PORTAINER_DOMAIN}/g" "$PWD/nginx/portainer.conf" > /etc/nginx/conf.d/portainer.conf
 chmod 644 /etc/nginx/conf.d/portainer.conf
 nginx -s reload
